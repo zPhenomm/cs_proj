@@ -2,10 +2,9 @@
 
 import cv2
 import numpy as np
-import os
 from playsound import playsound
 
-NIGHT = True
+NIGHT = False
 
 cap = cv2.VideoCapture(0)
 eye_cascade = cv2.CascadeClassifier("haarcascade_eye.xml")
@@ -34,7 +33,7 @@ while True:
         if NIGHT:
             eyes = eye_cascade.detectMultiScale(roi_gray, 1.1, 7)
         else:
-            eyes = eye_cascade.detectMultiScale(roi_gray, 1.1, 11)
+            eyes = eye_cascade.detectMultiScale(roi_gray, 1.1, 12)
 
     # if false detection of additional eye, the correct ones are the ones parallel to each other
     if len(eyes) > 2:
