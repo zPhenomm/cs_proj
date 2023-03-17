@@ -1,5 +1,3 @@
-# KEKW schalf nicht huso
-
 import cv2
 import numpy as np
 from playsound import playsound
