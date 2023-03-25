@@ -8,10 +8,14 @@ img = cv2.imread("eye.png")
 img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
 # KMeans clustering to differentiate iris
-k = 2
+clusters = 2
+max_iter = 100  # clustering iterations
+epsilon = 0.2  # accuracy
+attempts = 10
+
 inner_eye = np.float32(img)
-criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 100, 0.2)
-_, _, (centers) = cv2.kmeans(inner_eye, k, None, criteria, 10, cv2.KMEANS_RANDOM_CENTERS)
+criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, max_iter, epsilon)
+_, _, (centers) = cv2.kmeans(inner_eye, clusters, None, criteria, attempts, cv2.KMEANS_RANDOM_CENTERS)
 clusters = [round(statistics.mean(centers[0])), round(statistics.mean(centers[1]))]
 
 # visualization of clustering result

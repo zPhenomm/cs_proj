@@ -3,6 +3,14 @@ import numpy as np
 from playsound import playsound
 
 NIGHT = False
+scale_factor_face = 1.3
+scale_factor_eye = 1.1
+min_neighbors_face = 5  # specifies how many neighbors each candidate rectangle should have to retain it
+if NIGHT:
+    min_neighbors_eye = 7  # specifies how many neighbors each candidate rectangle should have to retain it
+else:
+    min_neighbors_eye = 12  # specifies how many neighbors each candidate rectangle should have to retain it
+
 
 cap = cv2.VideoCapture(0)
 eye_cascade = cv2.CascadeClassifier("haarcascade_eye.xml")
@@ -13,7 +21,7 @@ flag = False
 eye_ROI = []
 
 while True:
-    ret, frame = cap.read()    # get webcam image
+    ret, frame = cap.read()  # get webcam image
     if NIGHT:
         cv2.normalize(frame, frame, 0, 255, cv2.NORM_MINMAX)
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -21,17 +29,14 @@ while True:
     faces = ()
 
     # get ROI of face
-    faces = face_cascade.detectMultiScale(gray, 1.3, 5)
+    faces = face_cascade.detectMultiScale(gray, scale_factor_face, min_neighbors_face)
 
     # detect eyes in ROI of face
     for (x, y, w, h) in faces:
         img = cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
         roi_gray = gray[y:y + h, x:x + w]
         roi_color = img[y:y + h, x:x + w]
-        if NIGHT:
-            eyes = eye_cascade.detectMultiScale(roi_gray, 1.1, 7)
-        else:
-            eyes = eye_cascade.detectMultiScale(roi_gray, 1.1, 12)
+        eyes = eye_cascade.detectMultiScale(roi_gray, scale_factor_eye, min_neighbors_eye)
 
     # if false detection of additional eye, the correct ones are the ones parallel to each other
     if len(eyes) > 2:
